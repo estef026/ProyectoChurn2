@@ -1,26 +1,33 @@
+import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
 
 
-class Modelo_RN:
-    def __init__(self, datos, objetivo):
-        self.datos = datos
-        self.objetivo = objetivo
-        self.X_entrenamiento, self.X_prueba, self.y_entrenamiento, self.y_prueba = train_test_split(
-            datos, objetivo, test_size=0.2, random_state=42, stratify=True
-        )
+class ModelNR:
+    def __init__(self, input_shape):
+        self.model = Sequential()
+        self.model.add(Dense(12, activation='relu', input_shape=(input_shape,)))
+        self.model.add(Dense(8, activation='relu'))
+        self.model.add(Dense(1, activation='sigmoid'))
+        self.model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['accuracy'])
 
-    def create_model(data_entrada):
-        model = keras.Sequential([
-            layers.Dense(128, activation="relu", input_dim= data_entrada, name="hidden-dense-128-layer-1"),
-            layers.Dropout(0.3),
-            layers.Dense(64, activation="relu", name="hidden-dense-64-layer-2"),
-            layers.Dropout(0.2),
-            layers.Dense(1, activation="sigmoid", name="output-layer"),
-        ])
+    def train(self, X, y, test_size=0.2, epochs=50, batch_size=32):
+        # Dividir los datos en entrenamiento y prueba
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 
-        adam = tf.keras.optimizers.Adam()
-        model.compile(loss="binary_crossentropy", optimizer=adam, metrics=["accuracy"])
-        return model
+        # Entrenar el modelo directamente sin escalar los datos
+        history = self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size,
+                                 validation_data=(X_test, y_test))
+        return history, X_test, y_test
+
+    def evaluate(self, X_test, y_test):
+        # Evaluar el modelo directamente sin escalar los datos
+        loss, accuracy = self.model.evaluate(X_test, y_test)
+        return loss, accuracy
+
+    def predict(self, X_new):
+        # Realizar predicciones directamente sin escalar los datos
+        predictions = (self.model.predict(X_new) > 0.5).astype("int32")
+        return predictions
