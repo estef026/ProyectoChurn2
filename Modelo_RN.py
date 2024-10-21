@@ -5,7 +5,7 @@ from tensorflow.keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 
 
-class ModelNR:
+class ModeloRedNeuronal:
     def __init__(self, input_shape):
         self.model = Sequential()
         self.model.add(Dense(12, activation='relu', input_shape=(input_shape,)))
