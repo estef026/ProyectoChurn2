@@ -5,6 +5,7 @@ from tensorflow.keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 
 
+
 class ModeloRedNeuronal:
     def __init__(self, input_shape, neurons_1 = 12, neurons_2 = 8, learning_rate = 0.001):
         self.model = Sequential()
