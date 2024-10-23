@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 
 
 
-class ModeloRedNeuronal:
+class ModeloRedNeuronal_GS:
     def __init__(self, input_shape, neurons_1 = 12, neurons_2 = 8, learning_rate = 0.001):
         self.model = Sequential()
         self.model.add(Dense(neurons_1, activation='relu', input_shape=(input_shape,)))

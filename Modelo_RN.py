@@ -23,12 +23,12 @@ class ModeloRedNeuronal:
         # Entrenar el modelo directamente sin escalar los datos
         history = self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size,
                                  validation_data=(X_test, y_test))
-        return history, X_test, y_test
+        return history, X_test, y_test, X_train, y_train
 
     def evaluate(self, X_test, y_test):
         # Evaluar el modelo directamente sin escalar los datos
-        loss, accuracy = self.model.evaluate(X_test, y_test)
-        return loss, accuracy
+        loss, precision, recall, auc = self.model.evaluate(X_test, y_test)
+        return loss, precision, recall, auc
 
     def predict(self, X_new):
         # Realizar predicciones directamente sin escalar los datos
