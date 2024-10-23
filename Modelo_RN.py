@@ -14,7 +14,7 @@ class ModeloRedNeuronal:
         self.model.add(Dense(1, activation='sigmoid'))
         self.model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['recall', 'precision', AUC(name='auc')])
         self.model.summary()
-        return self.model.summary()
+
 
     def train(self, X, y, test_size=0.2, epochs=50, batch_size=32):
         # Dividir los datos en entrenamiento y prueba
@@ -27,7 +27,7 @@ class ModeloRedNeuronal:
 
     def evaluate(self, X_test, y_test):
         # Evaluar el modelo directamente sin escalar los datos
-        loss, precision, recall, auc = self.model.evaluate(X_test, y_test)
+        loss, recall, precision, auc = self.model.evaluate(X_test, y_test)
         return loss, precision, recall, auc
 
     def predict(self, X_new):
