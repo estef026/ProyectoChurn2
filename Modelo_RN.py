@@ -8,10 +8,10 @@ from sklearn.model_selection import train_test_split
 class ModeloRedNeuronal:
     def __init__(self, input_shape):
         self.model = Sequential()
-        self.model.add(Dense(12, activation='relu', input_shape=(input_shape,)))
-        self.model.add(Dense(8, activation='relu'))
+        self.model.add(Dense(64, activation='relu', input_shape=(input_shape,)))
+        self.model.add(Dense(32, activation='relu'))
         self.model.add(Dense(1, activation='sigmoid'))
-        self.model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['accuracy'])
+        self.model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['accuracy', 'precision', 'recall'])
 
     def train(self, X, y, test_size=0.2, epochs=50, batch_size=32):
         # Dividir los datos en entrenamiento y prueba
