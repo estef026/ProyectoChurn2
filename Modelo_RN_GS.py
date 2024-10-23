@@ -3,7 +3,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
-
+from tensorflow.keras.metrics import AUC
 
 
 class ModeloRedNeuronal_GS:
@@ -12,7 +12,7 @@ class ModeloRedNeuronal_GS:
         self.model.add(Dense(neurons_1, activation='relu', input_shape=(input_shape,)))
         self.model.add(Dense(neurons_2, activation='relu'))
         self.model.add(Dense(1, activation='sigmoid'))
-        self.model.compile(optimizer=Adam(learning_rate=learning_rate), loss='binary_crossentropy', metrics=['accuracy', 'precision', 'recall'])
+        self.model.compile(optimizer=Adam(learning_rate=learning_rate), loss='binary_crossentropy', metrics=['precision', 'recall', AUC(name='auc')])
         self.model.summary()
 
     def train(self, X, y, test_size=0.2, epochs=50, batch_size=32):
@@ -26,8 +26,8 @@ class ModeloRedNeuronal_GS:
 
     def evaluate(self, X_test, y_test):
         # Evaluar el modelo directamente sin escalar los datos
-        loss, accuracy = self.model.evaluate(X_test, y_test)
-        return loss, accuracy
+        auc, loss, precision, recall = self.model.evaluate(X_test, y_test)
+        return auc, loss, precision, recall
 
     def predict(self, X_new):
         # Realizar predicciones directamente sin escalar los datos

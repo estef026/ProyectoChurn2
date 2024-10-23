@@ -1,4 +1,5 @@
 import numpy as np
+from pandas.core.common import random_state
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
@@ -27,8 +28,8 @@ class ModeloRedNeuronal:
 
     def evaluate(self, X_test, y_test):
         # Evaluar el modelo directamente sin escalar los datos
-        loss, recall, precision, auc = self.model.evaluate(X_test, y_test)
-        return loss, precision, recall, auc
+        auc, loss, precision, recall = self.model.evaluate(X_test, y_test)
+        return auc, loss, precision, recall
 
     def predict(self, X_new):
         # Realizar predicciones directamente sin escalar los datos
