@@ -50,7 +50,8 @@ class GradientBoostingChurn:
             'confusion_matrix': confusion_matrix(y_test, y_pred)
         }
 
-        return metrics, y_pred
+        return metrics
+
     def predict(self, X_test):
         """
         Predice probabilidades para nuevos datos
