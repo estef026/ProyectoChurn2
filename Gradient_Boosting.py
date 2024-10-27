@@ -1,122 +1,72 @@
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 
 class GradientBoostingChurn:
     """
-    Clase para predecir el abandono (churn) de clientes bancarios usando Gradient Boosting
+    Clase para entrenar y evaluar un modelo de Gradient Boosting para predicción de churn
     """
 
-    def _init_(self):
-        self.model = None
-        self.label_encoders = {}
-        self.scaler = StandardScaler()
-        self.feature_names = None
-
-    def preprocess_data(self, X, categorical_features=None):
+    def __init__(self, n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42):
         """
-        Preprocesa nuevos datos usando los transformadores ajustados
+        Inicializa el modelo de Gradient Boosting con los hiperparámetros especificados
         """
-        X_processed = X.copy()
-
-        # Procesar características categóricas
-        if categorical_features:
-            for column in categorical_features:
-                if column in X_processed.columns:
-                    if column not in self.label_encoders:
-                        self.label_encoders[column] = LabelEncoder()
-                        X_processed[column] = self.label_encoders[column].fit_transform(X_processed[column])
-                    else:
-                        X_processed[column] = self.label_encoders[column].transform(X_processed[column])
-
-        # Procesar características numéricas
-        numeric_features = X_processed.select_dtypes(include=['int64', 'float64']).columns
-        X_processed[numeric_features] = self.scaler.transform(X_processed[numeric_features])
-        return X_processed
-
-    def fit(self, X, y, categorical_features=None, test_size=0.2, random_state=42):
-        """
-        Entrena el modelo con los datos proporcionados
-
-        Parámetros:
-        X: DataFrame con las características
-        y: Series con la variable objetivo
-        categorical_features: lista de nombres de columnas categóricas
-        test_size: proporción de datos para prueba
-        random_state: semilla aleatoria
-
-        Retorna:
-        dict con métricas de rendimiento del modelo
-        """
-        # Preprocesar datos
-        self.feature_names = X.columns
-        X_processed = self.preprocess_data(X, categorical_features)
-
-        # Dividir datos
-        X_train, X_test, y_train, y_test = train_test_split(
-            X_processed, y, test_size=test_size, random_state=random_state
-        )
-
-        # Entrenar modelo
         self.model = GradientBoostingClassifier(
-            n_estimators=100,
-            learning_rate=0.1,
-            max_depth=3,
+            n_estimators=n_estimators,
+            learning_rate=learning_rate,
+            max_depth=max_depth,
             random_state=random_state
         )
+        self.feature_names = None
 
+    def train(self, X_train, y_train, feature_names=None):
+        """
+        Entrena el modelo con los datos de entrenamiento
+
+        Parámetros:
+        X_train: array-like, datos de entrenamiento preprocesados
+        y_train: array-like, etiquetas de entrenamiento
+        feature_names: list, nombres de las características (opcional)
+        """
+        self.feature_names = feature_names if feature_names is not None else [f'Feature_{i}' for i in range(X_train.shape[1])]
         self.model.fit(X_train, y_train)
 
-        # Evaluar modelo
+    def evaluate(self, X_test, y_test):
+        """
+        Evalúa el modelo con los datos de prueba
+
+        Retorna:
+        dict con métricas de rendimiento
+        """
         y_pred = self.model.predict(X_test)
         y_pred_proba = self.model.predict_proba(X_test)[:, 1]
 
-        # Calcular métricas
         metrics = {
             'classification_report': classification_report(y_test, y_pred),
             'roc_auc_score': roc_auc_score(y_test, y_pred_proba),
-            'confusion_matrix': confusion_matrix(y_test, y_pred),
-            'feature_importance': pd.DataFrame({
-                'feature': self.feature_names,
-                'importance': self.model.feature_importances_
-            }).sort_values('importance', ascending=False)
+            'confusion_matrix': confusion_matrix(y_test, y_pred)
         }
 
-        return metrics
-
-    def predict_proba(self, X, categorical_features=None):
+        return metrics, y_pred
+    def predict(self, X_test):
         """
-        Predice la probabilidad de abandono para nuevos clientes
-
-        Parámetros:
-        X: DataFrame con los datos de los nuevos clientes
-        categorical_features: lista de nombres de columnas categóricas
-
-        Retorna:
-        Array con probabilidades de abandono
+        Predice probabilidades para nuevos datos
         """
-        if self.model is None:
-            raise ValueError("El modelo debe ser entrenado antes de hacer predicciones")
+        return self.model.predict(X_test)
 
-        X_processed = self.preprocess_data(X, categorical_features)
-        return self.model.predict_proba(X_processed)[:, 1]
+    def predict_proba(self, X):
+        """
+        Predice probabilidades para nuevos datos
+        """
+        return self.model.predict_proba(X)[:, 1]
 
     def plot_feature_importance(self, top_n=10):
         """
         Visualiza las características más importantes del modelo
-
-        Parámetros:
-        top_n: número de características principales a mostrar
         """
-        if self.model is None:
-            raise ValueError("El modelo debe ser entrenado antes de visualizar la importancia de características")
-
         feature_importance = pd.DataFrame({
             'feature': self.feature_names,
             'importance': self.model.feature_importances_
@@ -125,15 +75,22 @@ class GradientBoostingChurn:
         plt.figure(figsize=(10, 6))
         sns.barplot(data=feature_importance.head(top_n), x='importance', y='feature')
         plt.title(f'Top {top_n} Características más Importantes')
+        plt.tight_layout()
         plt.show()
 
-    def plot_confusion_matrix(self, y_true, y_pred):
+        return feature_importance
+
+    def plot_confusion_matrix(self, y_true, y_pred=None):
         """
         Visualiza la matriz de confusión
         """
+        if y_pred is None:
+            y_pred = self.model.predict(y_true)
         plt.figure(figsize=(8, 6))
-        sns.heatmap(confusion_matrix(y_true, y_pred), annot=True, fmt='d', cmap='Blues')
+        cm = confusion_matrix(y_true, y_pred)
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
         plt.title('Matriz de Confusión')
         plt.ylabel('Valor Real')
         plt.xlabel('Valor Predicho')
+        plt.tight_layout()
         plt.show()
