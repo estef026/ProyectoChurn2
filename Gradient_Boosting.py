@@ -38,7 +38,6 @@ class GradientBoostingChurn:
         # Procesar características numéricas
         numeric_features = X_processed.select_dtypes(include=['int64', 'float64']).columns
         X_processed[numeric_features] = self.scaler.transform(X_processed[numeric_features])
-
         return X_processed
 
     def fit(self, X, y, categorical_features=None, test_size=0.2, random_state=42):
