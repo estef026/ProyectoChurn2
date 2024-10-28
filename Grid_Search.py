@@ -1,65 +1,84 @@
-import numpy as np
-import pandas as pd
+# grid_search.py
+
 from sklearn.model_selection import GridSearchCV
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
 
-class ModelGridSearch:
-    def __init__(self, model, param_grid, cv=5):
+
+class Tuner:
+    def __init__(self, model, param_grid=None, score='accuracy', cv=5):
         """
-        Inicializa la clase para realizar Grid Search.
+        Inicializa el tuner para ajustar hiperparámetros de un modelo usando GridSearchCV.
 
-        :param model: Modelo de scikit-learn a optimizar.
-        :param param_grid: Diccionario de hiperparámetros a explorar.
-        :param cv: Número de divisiones para la validación cruzada.
+        Parámetros:
+        - model: El modelo base que se optimizará (ejemplo: AdaBoostClassifier).
+        - param_grid: Diccionario de hiperparámetros a ajustar.
+                      Si es None, se utilizan parámetros predefinidos según el modelo.
+        - score: La métrica a optimizar en el GridSearch (por defecto 'accuracy').
+        - cv: Número de folds para la validación cruzada (por defecto 5).
         """
-        self.model = model
-        self.param_grid = param_grid
-        self.cv = cv
-        self.grid_search = None
+        self.model = model  # Modelo a tunear
+        # Establece los parámetros a ajustar, utilizando parámetros predeterminados si no se proporciona ninguno
+        self.param_grid = param_grid if param_grid else self._default_params(model)
+        self.score = score  # Métrica a utilizar para evaluar el modelo
+        self.cv = cv  # Número de folds para validación cruzada
+        # Inicializa GridSearchCV con el modelo, los parámetros, la métrica de puntuación y el número de folds
+        self.grid = GridSearchCV(estimator=self.model, param_grid=self.param_grid, scoring=self.score, cv=self.cv)
 
-    def perform_grid_search(self, X, y):
-        """Realiza el Grid Search para encontrar los mejores hiperparámetros."""
-        self.grid_search = GridSearchCV(estimator=self.model, param_grid=self.param_grid, cv=self.cv, scoring='accuracy')
-        self.grid_search.fit(X, y)
-        print("Mejores hiperparámetros encontrados:", self.grid_search.best_params_)
+    def _default_params(self, model):
+        """
+        Devuelve un conjunto de parámetros predeterminados según el modelo especificado.
 
-    def get_best_model(self):
-        """Retorna el mejor modelo encontrado durante el Grid Search."""
-        return self.grid_search.best_estimator_
+        Parámetros:
+        - model: El modelo para el cual se desean los parámetros predeterminados.
 
-    def evaluate_best_model(self, X_test, y_test):
-        """Evalúa el mejor modelo en un conjunto de prueba."""
-        best_model = self.get_best_model()
-        y_pred = best_model.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        print(f"Precisión del mejor modelo: {accuracy:.2f}")
-        return accuracy
+        Retorna:
+        - Un diccionario de parámetros predeterminados para el modelo especificado.
+        """
+        name = type(model).__name__  # Obtiene el nombre de la clase del modelo
 
+        # Diccionario de parámetros predeterminados para diferentes modelos
+        params = {
+            'AdaBoostClassifier': {
+                'n_estimators': [50, 100, 200, 300],  # Número de estimadores
+                'learning_rate': [0.01, 0.05, 0.1, 0.5, 1]  # Tasa de aprendizaje
+            },
+            'GradientBoostingClassifier': {
+                'n_estimators': [50, 100, 200, 300],  # Número de estimadores
+                'learning_rate': [0.01, 0.05, 0.1, 0.5],  # Tasa de aprendizaje
+                'max_depth': [3, 5, 7, 9],  # Profundidad máxima de los árboles
+                'subsample': [0.7, 0.8, 0.9, 1.0]  # Proporción de muestras utilizadas para entrenar cada árbol
+            },
+            'MLPClassifier': {  # Clasificador de Red Neuronal
+                'hidden_layer_sizes': [(50,), (100,), (50, 50), (100, 50)],  # Tamaño de las capas ocultas
+                'activation': ['relu', 'tanh'],  # Función de activación
+                'alpha': [0.0001, 0.001, 0.01, 0.1],  # Parámetro de regularización L2
+                'learning_rate_init': [0.001, 0.01, 0.1],  # Tasa de aprendizaje inicial
+                'max_iter': [200, 500, 1000]  # Número máximo de iteraciones
+            },
+            'SVC': {
+                'C': [0.1, 1, 10, 100],  # Parámetro de regularización
+                'kernel': ['linear', 'rbf', 'poly'],  # Tipo de kernel
+                'gamma': ['scale', 'auto'],  # Coeficiente para el kernel rbf
+                'degree': [2, 3, 4]  # Grado del polinomio (solo para kernel polinómico)
+            }
+        }
 
-# Ejemplo de uso de la clase ModelGridSearch
-if __name__ == "__main__":
-    # Cargar tus datos (X, y)
-    # Ejemplo:
-    # X = pd.read_csv('datos.csv')
-    # y = X.pop('target_column')
+        # Si el nombre del modelo está en los parámetros predeterminados, devuelve los parámetros correspondientes
+        if name in params:
+            return params[name]
+        else:
+            raise ValueError(f"No hay parámetros predeterminados para el modelo: {name}")
 
-    # Define el rango de hiperparámetros para probar
-    param_grid = {
-        'n_estimators': [50, 100, 150],
-        'max_depth': [None, 10, 20, 30],
-        'min_samples_split': [2, 5, 10]
-    }
+    def tune(self, X, y):
+        """
+        Ajusta el GridSearchCV en los datos de entrenamiento y retorna el mejor modelo encontrado.
 
-    # Crear una instancia del modelo
-    rf_model = RandomForestClassifier(random_state=42)
+        Parámetros:
+        - X: Conjunto de características para el entrenamiento.
+        - y: Conjunto de etiquetas correspondientes a las características.
 
-    # Crear una instancia de la clase ModelGridSearch
-    grid_search_model = ModelGridSearch(model=rf_model, param_grid=param_grid)
-
-    # Realizar la búsqueda de hiperparámetros
-    grid_search_model.perform_grid_search(X, y)
-
-    # Evaluar el mejor modelo si se dispone de un conjunto de prueba
-    # X_test, y_test = ...
-    # grid_search_model.evaluate_best_model(X_test, y_test)
+        Retorna:
+        - El mejor modelo encontrado por el GridSearchCV.
+        """
+        self.grid.fit(X, y)  # Ajusta el GridSearchCV en los datos de entrenamiento
+        print("Mejores parámetros:", self.grid.best_params_)  # Muestra los mejores parámetros encontrados
+        return self.grid.best_estimator_  # Retorna el mejor estimador
