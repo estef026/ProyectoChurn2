@@ -4,6 +4,7 @@ pip install seaborn
 pip install scikit-learn
 pip install tensorflow
 pip install imbalanced-learn
+pip install pycaret
 
 import pandas as pd
 import matplotlib.pyplot as plt
