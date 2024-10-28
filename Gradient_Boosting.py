@@ -12,17 +12,22 @@ class GradientBoostingChurn:
 
     def __init__(self, n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42):
         """
-        Inicializa el modelo de Gradient Boosting con los hiperparámetros especificados
+        Inicializa el modelo de Gradient Boosting con los hiperparámetros especificados.
         """
+        self.n_estimators = n_estimators
+        self.learning_rate = learning_rate
+        self.max_depth = max_depth
+        self.random_state = random_state
+
         self.model = GradientBoostingClassifier(
-            n_estimators=n_estimators,
-            learning_rate=learning_rate,
-            max_depth=max_depth,
-            random_state=random_state
+            n_estimators=self.n_estimators,
+            learning_rate=self.learning_rate,
+            max_depth=self.max_depth,
+            random_state=self.random_state
         )
         self.feature_names = None
 
-    def train(self, X_train, y_train, feature_names=None):
+    def fit(self, X_train, y_train, feature_names=None):
         """
         Entrena el modelo con los datos de entrenamiento
 
@@ -95,3 +100,26 @@ class GradientBoostingChurn:
         plt.xlabel('Valor Predicho')
         plt.tight_layout()
         plt.show()
+
+    def get_params(self, deep=True):
+        """
+        Devuelve los parámetros del modelo.
+        """
+        return {
+            'n_estimators': self.n_estimators,
+            'learning_rate': self.learning_rate,
+            'max_depth': self.max_depth,
+            'random_state': self.random_state
+        }
+
+    def set_params(self, **params):
+        """
+        Actualiza los parámetros del modelo.
+        """
+        for key, value in params.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+                # También actualiza el modelo interno de GradientBoostingClassifier
+                if key in ['n_estimators', 'learning_rate', 'max_depth', 'random_state']:
+                    self.model.set_params(**{key: value})
+        return self
