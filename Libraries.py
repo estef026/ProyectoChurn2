@@ -3,7 +3,7 @@ pip install openpyxl
 pip install seaborn
 pip install scikit-learn
 pip install tensorflow
-
+pip install imbalanced-learn
 
 import pandas as pd
 import matplotlib.pyplot as plt
