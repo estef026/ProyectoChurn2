@@ -54,12 +54,12 @@ class Tuner:
                 'learning_rate': [0.01, 0.1]
             },
             'GradientBoostingChurn': {
-                'n_estimators': [100, 150],  # Ajustado para menos combinaciones
-                'learning_rate': [0.01, 0.05],
-                'max_depth': [3, 4],  # Ajustado
-                'subsample': [0.8, 1.0]  # Ajustado
+                'n_estimators': [ 150, 200, 300],  # Ajustado para menos combinaciones
+                'learning_rate': [ 0.05, 0.1, 5],
+                'max_depth': [ 5, 7, 9],  # Ajustado
+                'subsample': [0.5, 1.0, 5]  # Ajustado
             },
-            'MLPClassifier': {
+            'ModeloRedNeuronal': {
                 'hidden_layer_sizes': [(50,), (100,)],
                 'activation': ['relu'],
                 'alpha': [0.0001],
