@@ -10,8 +10,8 @@ from tensorflow.keras.metrics import AUC
 class ModeloRedNeuronal:
     def __init__(self, input_shape):
         self.model = Sequential()
-        self.model.add(Dense(64, activation='relu', input_shape=(input_shape,)))
-        self.model.add(Dense(32, activation='relu'))
+        self.model.add(Dense(128, activation='relu', input_shape=(input_shape,)))
+        self.model.add(Dense(64, activation='relu'))
         self.model.add(Dense(1, activation='sigmoid'))
         self.model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['recall', 'precision', AUC(name='auc')])
         self.model.summary()
