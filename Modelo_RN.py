@@ -5,6 +5,10 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.metrics import AUC
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 
 
 class ModeloRedNeuronal:
@@ -31,7 +35,21 @@ class ModeloRedNeuronal:
         auc, loss, precision, recall = self.model.evaluate(X_test, y_test)
         return auc, loss, precision, recall
 
-    def predict(self, X_new):
+    def prediction(self, X_new):
         # Realizar predicciones directamente sin escalar los datos
         predictions = (self.model.predict(X_new) > 0.5).astype("int32")
         return predictions
+
+    def confusion_matrix(self, y_test, y_pred):
+        cm = confusion_matrix(y_test, y_pred)
+        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+        plt.title("Matriz de Confusión")
+        plt.xlabel("Predicciones")
+        plt.ylabel("Valores Verdaderos")
+        plt.show()
+        return cm
+
+    def classification_report(self, y_test, y_pred):
+        report = classification_report(y_test, y_pred)
+        print("Informe de Clasificación:\n", report)
+        return y_pred
