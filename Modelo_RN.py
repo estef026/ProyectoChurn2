@@ -52,4 +52,4 @@ class ModeloRedNeuronal:
     def classification_report(self, y_test, y_pred):
         report = classification_report(y_test, y_pred)
         print("Informe de Clasificación:\n", report)
-        return y_pred
+        return report
