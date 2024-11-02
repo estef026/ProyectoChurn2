@@ -10,7 +10,7 @@ class GradientBoostingChurn:
     Clase para entrenar y evaluar un modelo de Gradient Boosting para predicción de churn
     """
 
-    def __init__(self, n_estimators=100, learning_rate=0.1, max_depth=3, subsample = 5, random_state=42):
+    def __init__(self, n_estimators=100, learning_rate=0.1, max_depth=3, subsample = 1, random_state=42):
         """
         Inicializa el modelo de Gradient Boosting con los hiperparámetros especificados.
         """

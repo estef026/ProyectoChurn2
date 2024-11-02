@@ -57,7 +57,7 @@ class Tuner:
                 'n_estimators': [ 150, 200, 300],  # Ajustado para menos combinaciones
                 'learning_rate': [ 0.05, 0.1, 5],
                 'max_depth': [ 5, 7, 9],  # Ajustado
-                'subsample': [0.5, 1.0, 5]  # Ajustado
+                'subsample': [0.5, 0.7, 1.0]  # Ajustado
             },
             'ModeloRedNeuronal': {
                 'hidden_layer_sizes': [(50,), (100,)],
