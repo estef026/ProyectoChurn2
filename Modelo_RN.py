@@ -13,6 +13,9 @@ import matplotlib.pyplot as plt
 
 class ModeloRedNeuronal:
     def __init__(self, input_shape):
+        self.input_shape = input_shape
+
+    def create_model(self, input_shape):
         self.model = Sequential()
         self.model.add(Dense(128, activation='relu', input_shape=(input_shape,)))
         self.model.add(Dropout(0.1))
