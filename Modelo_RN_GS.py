@@ -33,3 +33,4 @@ class ModeloRedNeuronal_GS:
         # Realizar predicciones directamente sin escalar los datos
         predictions = (self.model.predict(X_new) > 0.5).astype("int32")
         return predictions
+
