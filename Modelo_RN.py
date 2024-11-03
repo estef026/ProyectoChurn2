@@ -52,7 +52,7 @@ class ModeloRedNeuronal:
         plt.xlabel("Predicciones")
         plt.ylabel("Valores Verdaderos")
         plt.show()
-        return cm
+
 
     def classification_report(self, y_test, y_pred):
         report = classification_report(y_test, y_pred)
