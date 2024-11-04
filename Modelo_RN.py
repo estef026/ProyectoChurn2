@@ -2,7 +2,7 @@ import numpy as np
 from pandas.core.common import random_state
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
-from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers import Adam, RMSprop
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.metrics import AUC
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
@@ -22,7 +22,7 @@ class ModeloRedNeuronal:
         self.model.add(Dense(64, activation='relu'))
         self.model.add(Dropout(0.1))
         self.model.add(Dense(1, activation='sigmoid'))
-        self.model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['recall', 'precision', AUC(name='auc')])
+        self.model.compile(optimizer=RMSprop(learning_rate=0.001), loss='binary_crossentropy', metrics=['recall', 'precision', AUC(name='auc')])
         self.model.summary()
 
 

@@ -60,11 +60,10 @@ class Tuner:
                 'subsample': [0.5, 0.7, 1.0]  # Ajustado
             },
             'ModeloRedNeuronal': {
-                'hidden_layer_sizes': [(50,), (100,)],
-                'activation': ['relu'],
-                'alpha': [0.0001],
-                'learning_rate_init': [0.001],
-                'max_iter': [200]
+                'batch_size': [32, 64, 128],
+                'epochs': [5, 10, 15],
+                'optimizer': ['adam', 'rmsprop'],
+                'optimizer__learning_rate': [0.001, 0.01, 0.1]
             },
             'SVC': {
                 'C': [0.1, 1],
