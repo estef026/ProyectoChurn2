@@ -88,7 +88,6 @@ class Tuner:
         print("Mejores parámetros:", self.grid.best_params_)
         return self.grid.best_params_
 
-
 # Ejemplo de uso
 # gb_tuner = Tuner(model_GB, use_random_search=True, n_iter=10)
 # best_params = gb_tuner.tune(X_train, y_train)
