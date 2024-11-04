@@ -22,11 +22,11 @@ class ModeloRedNeuronal:
         self.model.add(Dense(64, activation='relu'))
         self.model.add(Dropout(0.1))
         self.model.add(Dense(1, activation='sigmoid'))
-        self.model.compile(optimizer=RMSprop(learning_rate=0.001), loss='binary_crossentropy', metrics=['recall', 'precision', AUC(name='auc')])
+        self.model.compile(optimizer=RMSprop(learning_rate=0.1), loss='binary_crossentropy', metrics=['recall', 'precision', AUC(name='auc')])
         self.model.summary()
 
 
-    def train(self, X, y, test_size=0.2, epochs=50, batch_size=32):
+    def train(self, X, y, test_size=0.2, epochs=50, batch_size=64):
         # Dividir los datos en entrenamiento y prueba
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
 

@@ -8,12 +8,18 @@ from tensorflow.keras.metrics import AUC
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 
 def create_model(input_shape = 43, optimizer = 'adam'):
     model = Sequential()
     model.add(Dense(128, activation='relu', input_shape=(input_shape,)))
+    model.add(Dropout(0.1))
     model.add(Dense(64, activation='relu'))
+    model.add(Dropout(0.1))
     model.add(Dense(1, activation='sigmoid'))
     model.compile(optimizer=optimizer, loss='binary_crossentropy',
-                  metrics=['recall', 'precision', AUC(name='auc')])
+                    metrics=['recall', 'precision', AUC(name='auc')])
+    model.summary()
     return model
+
+def grid_search_nn():

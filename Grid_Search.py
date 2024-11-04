@@ -1,6 +1,12 @@
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import make_scorer, accuracy_score, f1_score
-
+import numpy as np
+from pandas.core.common import random_state
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.optimizers import Adam
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.metrics import AUC
 
 class Tuner:
     def __init__(self, model, param_grid=None, score='accuracy', cv=5, use_random_search=False, n_iter=10):
@@ -59,7 +65,7 @@ class Tuner:
                 'max_depth': [ 5, 7, 9],  # Ajustado
                 'subsample': [0.5, 0.7, 1.0]  # Ajustado
             },
-            'ModeloRedNeuronal': {
+            'KerasClassifier': {
                 'batch_size': [32, 64, 128],
                 'epochs': [5, 10, 15],
                 'optimizer': ['adam', 'rmsprop'],
@@ -81,6 +87,7 @@ class Tuner:
         self.grid.fit(X, y)
         print("Mejores parámetros:", self.grid.best_params_)
         return self.grid.best_params_
+
 
 # Ejemplo de uso
 # gb_tuner = Tuner(model_GB, use_random_search=True, n_iter=10)
