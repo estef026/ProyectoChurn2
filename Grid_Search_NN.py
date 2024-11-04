@@ -21,17 +21,3 @@ def create_model(input_shape = 43, optimizer = 'adam'):
                     metrics=['recall', 'precision', AUC(name='auc')])
     model.summary()
     return model
-
-def grid_search_nn(estimator, scoring, cv, X_train, y_train):
-
-    grid_search = GridSearchCV(estimator= estimator,
-                               param_grid={'batch_size': [32, 64, 128],
-                                            'epochs': [5, 10, 15],
-                                            'optimizer': ['adam', 'rmsprop'],
-                                            'optimizer__learning_rate': [0.001, 0.01, 0.1]},
-                               scoring= scoring,
-                               cv=cv)
-
-    grid_search.fit(X_train, y_train, verbose=0)
-
-    return grid_search.best_params_, grid_search.best_score_
