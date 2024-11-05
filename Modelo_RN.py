@@ -22,7 +22,7 @@ class ModeloRedNeuronal:
         self.model.add(Dense(64, activation='relu'))
         self.model.add(Dropout(0.1))
         self.model.add(Dense(1, activation='sigmoid'))
-        self.model.compile(optimizer=RMSprop(learning_rate=0.1), loss='binary_crossentropy', metrics=['accuracy', 'recall', 'precision', AUC(name='auc')])
+        self.model.compile(optimizer=RMSprop(learning_rate=0.1), loss='binary_crossentropy', metrics=['recall', 'precision', AUC(name='auc'), 'accuracy'])
         self.model.summary()
 
     def create_best_model(self, input_shape):
@@ -32,7 +32,7 @@ class ModeloRedNeuronal:
         self.model.add(Dense(64, activation='relu'))
         self.model.add(Dropout(0.1))
         self.model.add(Dense(1, activation='sigmoid'))
-        self.model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['accuracy', 'recall', 'precision', AUC(name='auc')])
+        self.model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['recall', 'precision', AUC(name='auc'), 'accuracy'])
         self.model.summary()
 
     def train(self, X, y, test_size=0.2, epochs=50, batch_size=64):
@@ -46,8 +46,8 @@ class ModeloRedNeuronal:
 
     def evaluate(self, X_test, y_test):
         # Evaluar el modelo directamente sin escalar los datos
-        auc, loss, precision, recall = self.model.evaluate(X_test, y_test)
-        return auc, loss, precision, recall
+        auc, loss, precision, recall, accuracy = self.model.evaluate(X_test, y_test)
+        return auc, loss, precision, recall, accuracy
 
     def prediction(self, X_new):
         # Realizar predicciones directamente sin escalar los datos

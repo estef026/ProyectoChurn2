@@ -84,7 +84,7 @@ class Tuner:
             raise ValueError(f"No hay parámetros predeterminados para el modelo: {name}")
 
     def tune(self, X, y):
-        self.grid.fit(X, y, verbose = 0)
+        self.grid.fit(X, y)
         print("Mejores parámetros:", self.grid.best_params_)
         return self.grid.best_params_
 
