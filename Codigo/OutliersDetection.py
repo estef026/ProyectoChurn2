@@ -21,11 +21,17 @@ class OutlierDetector:
         return len(outliers)
 
     def outliers_summary(self):
+        # Total number of records in the DataFrame
+        total_records = len(self.df)
+        # Create a list to store results
+        outlier_data = []
 
-        outlier_counts = {}
+        # Loop through each numerical column to calculate outlier counts and percentages
         for column in self.df.select_dtypes(include=['float', 'int']).columns:
-            outlier_counts[column] = self.count_outliers(column)
+            count = self.count_outliers(column)
+            percentage = (count / total_records) * 100
+            outlier_data.append((column, count, percentage))
 
-        # Convert dictionary to DataFrame
-        outliers_df = pd.DataFrame(outlier_counts.items(), columns=['Column', 'Outlier_Count'])
+        # Convert list to DataFrame
+        outliers_df = pd.DataFrame(outlier_data, columns=['Column', 'Outlier_Count', 'Outlier_Percentage'])
         return outliers_df
