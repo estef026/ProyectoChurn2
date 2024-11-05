@@ -10,7 +10,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 
-def create_model(input_shape = 43, optimizer = 'adam'):
+def grid_search_model(input_shape = 43, optimizer = 'adam'):
     model = Sequential()
     model.add(Dense(128, activation='relu', input_shape=(input_shape,)))
     model.add(Dropout(0.1))
@@ -19,5 +19,5 @@ def create_model(input_shape = 43, optimizer = 'adam'):
     model.add(Dense(1, activation='sigmoid'))
     model.compile(optimizer=optimizer, loss='binary_crossentropy',
                     metrics=['recall', 'precision', AUC(name='auc')])
-    model.summary()
+
     return model

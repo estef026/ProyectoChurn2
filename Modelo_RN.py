@@ -25,6 +25,15 @@ class ModeloRedNeuronal:
         self.model.compile(optimizer=RMSprop(learning_rate=0.1), loss='binary_crossentropy', metrics=['recall', 'precision', AUC(name='auc')])
         self.model.summary()
 
+    def create_best_model(self, input_shape):
+        self.model = Sequential()
+        self.model.add(Dense(128, activation='relu', input_shape=(input_shape,)))
+        self.model.add(Dropout(0.1))
+        self.model.add(Dense(64, activation='relu'))
+        self.model.add(Dropout(0.1))
+        self.model.add(Dense(1, activation='sigmoid'))
+        self.model.compile(optimizer=Adam(learning_rate=0.001), loss='binary_crossentropy', metrics=['recall', 'precision', AUC(name='auc')])
+        self.model.summary()
 
     def train(self, X, y, test_size=0.2, epochs=50, batch_size=64):
         # Dividir los datos en entrenamiento y prueba
@@ -57,3 +66,4 @@ class ModeloRedNeuronal:
     def classification_report(self, y_test, y_pred):
         report = classification_report(y_test, y_pred)
         print("Informe de Clasificación:\n", report)
+

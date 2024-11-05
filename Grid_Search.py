@@ -67,7 +67,7 @@ class Tuner:
             },
             'KerasClassifier': {
                 'batch_size': [32, 64, 128],
-                'epochs': [5, 10, 15],
+                'epochs': [10, 15, 20],
                 'optimizer': ['adam', 'rmsprop'],
                 'optimizer__learning_rate': [0.001, 0.01, 0.1]
             },
@@ -84,7 +84,7 @@ class Tuner:
             raise ValueError(f"No hay parámetros predeterminados para el modelo: {name}")
 
     def tune(self, X, y):
-        self.grid.fit(X, y)
+        self.grid.fit(X, y, verbose = 0)
         print("Mejores parámetros:", self.grid.best_params_)
         return self.grid.best_params_
 
