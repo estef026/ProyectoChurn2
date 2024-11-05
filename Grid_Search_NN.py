@@ -18,6 +18,6 @@ def grid_search_model(input_shape = 43, optimizer = 'adam'):
     model.add(Dropout(0.1))
     model.add(Dense(1, activation='sigmoid'))
     model.compile(optimizer=optimizer, loss='binary_crossentropy',
-                    metrics=['recall', 'precision', AUC(name='auc')])
+                    metrics=['accuracy','recall', 'precision', AUC(name='auc')])
 
     return model
