@@ -1,12 +1,6 @@
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import make_scorer, accuracy_score, f1_score
-import numpy as np
-from pandas.core.common import random_state
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
-from tensorflow.keras.optimizers import Adam
-from sklearn.model_selection import train_test_split
-from tensorflow.keras.metrics import AUC
+
 
 class Tuner:
     def __init__(self, model, param_grid=None, score='accuracy', cv=5, use_random_search=False, n_iter=10):
@@ -63,13 +57,14 @@ class Tuner:
                 'n_estimators': [ 150, 200, 300],  # Ajustado para menos combinaciones
                 'learning_rate': [ 0.05, 0.1, 5],
                 'max_depth': [ 5, 7, 9],  # Ajustado
-                'subsample': [0.5, 0.7, 1.0]  # Ajustado
+                'subsample': [0.5, 1.0, 5]  # Ajustado
             },
-            'KerasClassifier': {
-                'batch_size': [32, 64, 128],
-                'epochs': [10, 15, 20],
-                'optimizer': ['adam', 'rmsprop'],
-                'optimizer__learning_rate': [0.001, 0.01, 0.1]
+            'ModeloRedNeuronal': {
+                'hidden_layer_sizes': [(50,), (100,)],
+                'activation': ['relu'],
+                'alpha': [0.0001],
+                'learning_rate_init': [0.001],
+                'max_iter': [200]
             },
             'SVC': {
                 'C': [0.1, 1],
