@@ -8,7 +8,7 @@ class Tuner:
         Inicializa el tuner para ajustar hiperparámetros de un modelo.
 
         Parámetros:
-        - model: El modelo base que se optimizará (ejemplo: AdaBoostClassifier).
+        - model: El modelo base que se optimizará (ejemplo: AdaBoostModel).
         - param_grid: Diccionario de hiperparámetros a ajustar.
         - score: La métrica a optimizar en el GridSearch (por defecto 'accuracy').
         - cv: Número de folds para la validación cruzada (por defecto 5).
@@ -49,9 +49,12 @@ class Tuner:
         print(f"Modelo: {name}")
 
         params = {
-            'AdaBoostClassifier': {
-                'n_estimators': [50, 100],
-                'learning_rate': [0.01, 0.1]
+            'AdaBoostChurn': {
+                'n_estimators': [50, 100, 200],
+                'learning_rate': [0.01, 0.1],
+                'algorithm': ['SAMME', 'SAMME.R'],
+                'max_depth': [3,5,7]
+
             },
             'GradientBoostingChurn': {
                 'n_estimators': [ 150, 200, 300],  # Ajustado para menos combinaciones
@@ -66,7 +69,7 @@ class Tuner:
                 'optimizer__learning_rate': [0.001, 0.01, 0.1]
             },
             'SVC': {
-                'C': [0.1, 1],
+                'C': [0.1, 1, 10],
                 'kernel': ['linear'],
                 'gamma': ['scale']
             }
@@ -86,6 +89,3 @@ class Tuner:
         self.grid.fit(X, y, verbose = 0)
         print("Mejores parámetros:", self.grid.best_params_)
         return self.grid.best_params_
-# Ejemplo de uso
-# gb_tuner = Tuner(model_GB, use_random_search=True, n_iter=10)
-# best_params = gb_tuner.tune(X_train, y_train)
