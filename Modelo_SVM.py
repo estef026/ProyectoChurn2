@@ -7,6 +7,9 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, recall_score
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 class ModeloSVM:
@@ -23,23 +26,47 @@ class ModeloSVM:
         self.X_entrenamiento, self.X_prueba, self.y_entrenamiento, self.y_prueba = train_test_split(
             datos, objetivo, test_size=0.2, random_state=42
         )
+        self.modelo_entrenado = None
 
-    def entrenar(self):
+    def svm_default(self, probability=True):
         """
-        Entrena el modelo SVM utilizando GridSearchCV para optimizar los hiperparámetros.
+        Devuelve un clasificador SVM con un parámetro predeterminado.
+
+        Parámetros:
+        - probability: Booleano que indica si el clasificador debe calcular probabilidades.
+
+        Retorna:
+        - SVC con los parámetros predeterminados.
         """
-        # Definimos los hiperparámetros que queremos optimizar
-        param_grid = {
-            'C': [0.1, 1, 10],
-            'kernel': ['linear', 'rbf', 'poly']
-        }
+        return SVC(probability=probability)
 
-        # Creamos el clasificador SVM
-        svm = SVC()
+    def entrenar(self, modelo=None, use_grid_search=True, param_grid=None):
+        """
+        Entrena el modelo SVM, con la opción de usar un estimador personalizado o GridSearchCV.
 
-        # Utilizamos GridSearchCV para encontrar la mejor combinación de hiperparámetros
-        self.busqueda_grid = GridSearchCV(svm, param_grid, cv=3, scoring='accuracy')
-        self.busqueda_grid.fit(self.X_entrenamiento, self.y_entrenamiento)
+        Parámetros:
+        - modelo: Estimador SVM personalizado (si se proporciona).
+        - use_grid_search: Booleano que indica si se debe usar GridSearchCV.
+        - param_grid: Diccionario de hiperparámetros para GridSearchCV (solo si use_grid_search es True).
+        """
+        if modelo is None:
+            modelo = self.svm_default()
+
+        if use_grid_search:
+            # Si no se proporcionan hiperparámetros, usar valores predeterminados
+            if param_grid is None:
+                param_grid = {
+                    'C': [0.01, 0.1, 1, 10],
+                    'kernel': ['linear', 'rbf', 'poly']
+                }
+            self.busqueda_grid = GridSearchCV(modelo, param_grid, cv=3, scoring='accuracy')
+            self.busqueda_grid.fit(self.X_entrenamiento, self.y_entrenamiento)
+            self.modelo_entrenado = self.busqueda_grid.best_estimator_
+        else:
+            # Entrena el modelo directamente sin grid search
+            modelo.fit(self.X_entrenamiento, self.y_entrenamiento)
+            self.modelo_entrenado = modelo
+
 
     def evaluar(self):
         """
@@ -48,12 +75,15 @@ class ModeloSVM:
         Retorna:
         - exactitud: Precisión del modelo en el conjunto de prueba.
         """
+        if self.modelo_entrenado is None:
+            raise Exception("El modelo no ha sido entrenado. Llame al método entrenar() primero.")
+
         # Realizamos predicciones en el conjunto de prueba
-        y_pred = self.busqueda_grid.predict(self.X_prueba)
+        self.y_pred = self.modelo_entrenado.predict(self.X_prueba)
 
         # Calculamos la exactitud
-        exactitud = accuracy_score(self.y_prueba, y_pred)
-        return exactitud
+        recall = recall_score(self.y_prueba, self.y_pred)
+        return recall
 
     def predecir(self, nuevos_datos):
         """
@@ -65,5 +95,21 @@ class ModeloSVM:
         Retorna:
         - predicciones: Array con las predicciones del modelo.
         """
-        predicciones = self.busqueda_grid.predict(nuevos_datos)
+        if self.modelo_entrenado is None:
+            raise Exception("El modelo no ha sido entrenado. Llame al método entrenar() primero.")
+
+        predicciones = self.modelo_entrenado.predict(nuevos_datos)
         return predicciones
+
+    def confusion_matrix(self):
+        cm = confusion_matrix(self.y_prueba, self.y_pred)
+        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+        plt.title("Matriz de Confusión")
+        plt.xlabel("Predicciones")
+        plt.ylabel("Valores Verdaderos")
+        plt.show()
+
+
+    def classification_report(self):
+        report = classification_report(self.y_prueba, self.y_pred)
+        print("Informe de Clasificación:\n", report)
