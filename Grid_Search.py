@@ -61,7 +61,7 @@ class Tuner:
             },
             'KerasClassifier': {
                 'batch_size': [32, 64, 128],
-                'epochs': [5, 10, 15],
+                'epochs': [15, 10],
                 'optimizer': ['adam', 'rmsprop'],
                 'optimizer__learning_rate': [0.001, 0.01, 0.1]
             },
