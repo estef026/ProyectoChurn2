@@ -4,7 +4,7 @@
 
 
 #### Autores:
-  ##### Andree Amahar Aaron Quiroz
+  ##### Andree Amahar Aaron Quiroz 👨🏽‍🚀
   ##### Eva Estefania Martinez Castillo
   ##### Yud Karem Rozo Avila
   ##### Zorayda Acevedo Fernandez
