@@ -6,6 +6,8 @@
 ¿contenido de las carpetas?
 Recomendaciones!!
 
+-- Uso de Python 3.11 como interprete
+
 #### Autores:
   ##### Andree Amahar Aaron Quiroz ‍🧞‍♂️
   ##### Eva Estefania Martinez Castillo 🧜🏼‍♀️
