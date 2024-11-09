@@ -4,7 +4,8 @@
 
 
 #### Autores:
-  ##### Andree Amahar Aaron Quiroz
-  ##### Eva Estefania Martinez Castillo
-  ##### Yud Karem Rozo Avila
-  ##### Zorayda Acevedo Fernandez
+  ##### Andree Amahar Aaron Quiroz 🤵🏽‍♂️
+  ##### Eva Estefania Martinez Castillo 🧜🏼‍♀️
+  ##### Yud Karem Rozo Avila  🦹‍♀️
+  ##### Zorayda Acevedo Fernandez 
+…
