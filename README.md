@@ -2,6 +2,9 @@
 
 ## Comenzando 🚀
 
+¿Que desarrollamos en el proyecto?
+¿contenido de las carpetas?
+Recomendaciones!!
 
 #### Autores:
   ##### Andree Amahar Aaron Quiroz ‍🧞‍♂️
