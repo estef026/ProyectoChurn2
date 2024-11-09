@@ -52,9 +52,9 @@ class Tuner:
             'AdaBoostChurn': {
                 'n_estimators': [50, 100, 200],
                 'learning_rate': [0.01, 0.1],
-                'algorithm': ['SAMME', 'SAMME.R'],
-                'max_depth': [3,5,7]
-
+                'algorithm': ['SAMME'],
+                'estimator__max_depth': [1, 2, 3, 4],
+                'random_state': [42]
             },
             'GradientBoostingChurn': {
                 'n_estimators': [ 150, 200, 300],  # Ajustado para menos combinaciones
@@ -68,10 +68,12 @@ class Tuner:
                 'optimizer': ['adam', 'rmsprop'],
                 'optimizer__learning_rate': [0.001, 0.01, 0.1]
             },
-            'SVC': {
-                'C': [0.1, 1, 10],
-                'kernel': ['linear'],
-                'gamma': ['scale']
+            'SVMChurn': {
+                'C': [0.1, 1, 10],  # Ajustar la regularización
+                'kernel': ['linear', 'rbf'],  # Kernel lineal o radial (más común)
+                'gamma': ['scale', 'auto'],  # Ajustar la influencia de los puntos
+                'class_weight': [None, 'balanced'],  # Ajuste de pesos de las clases
+                'random_state': [42]
             }
         }
 

@@ -10,9 +10,9 @@ class GradientBoostingChurn:
     Clase para entrenar y evaluar un modelo de Gradient Boosting para predicción de churn
     """
 
-    def __init__(self, n_estimators=100, learning_rate=0.1, max_depth=3, subsample = 1, random_state=42):
+    def __init__(self, n_estimators=100, learning_rate=0.1, max_depth=3, subsample=1.0, random_state=42):
         """
-        Inicializa el modelo de Gradient Boosting con los hiperparámetros especificados.
+        Inicializa el modelo de Gradient Boosting con los hiperparámetros especificados o valores predeterminados.
         """
         self.n_estimators = n_estimators
         self.learning_rate = learning_rate
@@ -29,6 +29,18 @@ class GradientBoostingChurn:
         )
         self.feature_names = None
 
+    def update_params(self, params):
+        """
+        Actualiza los parámetros del modelo con un diccionario.
+
+        Parámetros:
+        params: dict, diccionario de hiperparámetros
+        """
+        self.model.set_params(**params)
+        for key, value in params.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+
     def fit(self, X_train, y_train, feature_names=None):
         """
         Entrena el modelo con los datos de entrenamiento
@@ -41,23 +53,38 @@ class GradientBoostingChurn:
         self.feature_names = feature_names if feature_names is not None else [f'Feature_{i}' for i in range(X_train.shape[1])]
         self.model.fit(X_train, y_train)
 
-    def evaluate(self, X_test, y_test):
+    def evaluate(self, X_train, y_train, X_test, y_test):
         """
-        Evalúa el modelo con los datos de prueba
+        Evalúa el modelo en el conjunto de entrenamiento y prueba,
+        y retorna una tabla comparativa de métricas.
 
         Retorna:
-        dict con métricas de rendimiento
+        DataFrame con métricas de rendimiento para entrenamiento y prueba
         """
-        y_pred = self.model.predict(X_test)
-        y_pred_proba = self.model.predict_proba(X_test)[:, 1]
-
-        metrics = {
-            'classification_report': classification_report(y_test, y_pred),
-            'roc_auc_score': roc_auc_score(y_test, y_pred_proba),
-            'confusion_matrix': confusion_matrix(y_test, y_pred)
+        # Métricas para el conjunto de entrenamiento
+        y_train_pred = self.model.predict(X_train)
+        y_train_pred_proba = self.model.predict_proba(X_train)[:, 1]
+        train_metrics = {
+            'Set': 'Train',
+            'ROC AUC Score': roc_auc_score(y_train, y_train_pred_proba),
+            'Classification Report': classification_report(y_train, y_train_pred, output_dict=True),
+            'Confusion Matrix': confusion_matrix(y_train, y_train_pred)
         }
 
-        return metrics
+        # Métricas para el conjunto de prueba
+        y_test_pred = self.model.predict(X_test)
+        y_test_pred_proba = self.model.predict_proba(X_test)[:, 1]
+        test_metrics = {
+            'Set': 'Test',
+            'ROC AUC Score': roc_auc_score(y_test, y_test_pred_proba),
+            'Classification Report': classification_report(y_test, y_test_pred, output_dict=True),
+            'Confusion Matrix': confusion_matrix(y_test, y_test_pred)
+        }
+
+        # Crear DataFrame para organizar los resultados
+        metrics_df = pd.DataFrame([train_metrics, test_metrics])
+
+        return metrics_df
 
     def predict(self, X_test):
         """
@@ -80,9 +107,8 @@ class GradientBoostingChurn:
             'importance': self.model.feature_importances_
         }).sort_values('importance', ascending=False)
 
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(8, 6))
         sns.barplot(data=feature_importance.head(top_n), x='importance', y='feature')
-        plt.title(f'Top {top_n} Características más Importantes')
         plt.tight_layout()
         plt.show()
 

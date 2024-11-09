@@ -1,35 +1,39 @@
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
 from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
-class AdaBoostChurn:
+class SVMChurn:
     """
-    Clase para entrenar y evaluar un modelo de AdaBoost para predicción de churn.
+    Clase para entrenar y evaluar un modelo SVM (Support Vector Machine) para predicción de churn.
     """
 
-    def __init__(self, n_estimators=50, learning_rate=1.0, algorithm='SAMME',  max_depth=3, random_state=42):
+    def __init__(self, C=1.0, kernel='rbf', gamma='scale', class_weight=None, random_state=42):
         """
-        Inicializa el modelo de AdaBoost con los hiperparámetros especificados.
+        Inicializa el modelo de SVM con los hiperparámetros especificados.
+
+        Parámetros:
+        C: float, opción que controla la penalización por margen incorrecto.
+        kernel: {'linear', 'poly', 'rbf', 'sigmoid'}, tipo de kernel a usar.
+        gamma: {'scale', 'auto'} o float, función de activación.
+        class_weight: dict o 'balanced', ajusta el peso de las clases.
+        random_state: int, controla la aleatoriedad.
         """
-        self.n_estimators = n_estimators
-        self.learning_rate = learning_rate
-        self.algorithm = algorithm
-        self.max_depth = max_depth
+        self.C = C
+        self.kernel = kernel
+        self.gamma = gamma
+        self.class_weight = class_weight
         self.random_state = random_state
 
-        # Crear el estimador base, un DecisionTreeClassifier con el max_depth especificado
-        base_estimator = DecisionTreeClassifier(max_depth=self.max_depth, random_state=self.random_state)
-
-        # Crear el modelo de AdaBoost con el estimador base
-        self.model = AdaBoostClassifier(
-            estimator=base_estimator,  # Establecer el estimador base
-            n_estimators=self.n_estimators,
-            learning_rate=self.learning_rate,
-            algorithm=self.algorithm,
-            random_state=self.random_state
+        # Crear el modelo SVM
+        self.model = SVC(
+            C=self.C,
+            kernel=self.kernel,
+            gamma=self.gamma,
+            class_weight=self.class_weight,
+            random_state=self.random_state,
+            probability=True  # Activar probabilidades para el cálculo de ROC AUC
         )
         self.feature_names = None
 
@@ -38,16 +42,16 @@ class AdaBoostChurn:
         Entrena el modelo con los datos de entrenamiento.
 
         Parámetros:
-        X_train: array-like, datos de entrenamiento preprocesados
-        y_train: array-like, etiquetas de entrenamiento
-        feature_names: list, nombres de las características (opcional)
+        X_train: array-like, datos de entrenamiento preprocesados.
+        y_train: array-like, etiquetas de entrenamiento.
+        feature_names: list, nombres de las características (opcional).
         """
         self.feature_names = feature_names if feature_names is not None else [f'Feature_{i}' for i in range(X_train.shape[1])]
         self.model.fit(X_train, y_train)
 
     def evaluate(self, X_train, y_train, X_test, y_test):
         """
-        Evalúa el modelo con los datos de entrenamiento y prueba.
+        Evalúa el modelo en los conjuntos de entrenamiento y prueba.
 
         Retorna:
         dict con métricas de rendimiento para ambos conjuntos de datos
@@ -79,7 +83,7 @@ class AdaBoostChurn:
 
     def predict(self, X_test):
         """
-        Predice probabilidades para nuevos datos.
+        Predice las clases para nuevos datos.
         """
         return self.model.predict(X_test)
 
@@ -91,20 +95,26 @@ class AdaBoostChurn:
 
     def plot_feature_importance(self, top_n=10):
         """
-        Visualiza las características más importantes del modelo.
+        Visualiza las características más importantes del modelo. Para SVM, usamos los coeficientes
+        del kernel lineal.
         """
-        feature_importance = pd.DataFrame({
-            'feature': self.feature_names,
-            'importance': self.model.feature_importances_
-        }).sort_values('importance', ascending=False)
+        if self.kernel == 'linear':
+            coef = self.model.coef_.flatten()
+            feature_importance = pd.DataFrame({
+                'feature': self.feature_names,
+                'importance': abs(coef)
+            }).sort_values('importance', ascending=False)
 
-        plt.figure(figsize=(10, 6))
-        sns.barplot(data=feature_importance.head(top_n), x='importance', y='feature')
-        plt.title(f'Top {top_n} Características más Importantes')
-        plt.tight_layout()
-        plt.show()
+            plt.figure(figsize=(10, 6))
+            sns.barplot(data=feature_importance.head(top_n), x='importance', y='feature')
+            plt.title(f'Top {top_n} Características más Importantes')
+            plt.tight_layout()
+            plt.show()
 
-        return feature_importance
+            return feature_importance
+        else:
+            print("La visualización de importancia solo está disponible para kernels lineales.")
+            return None
 
     def plot_confusion_matrix(self, X, y_true, y_pred=None):
         """
@@ -128,10 +138,10 @@ class AdaBoostChurn:
         Devuelve los parámetros del modelo.
         """
         return {
-            'n_estimators': self.n_estimators,
-            'learning_rate': self.learning_rate,
-            'algorithm': self.algorithm,
-            'max_depth': self.max_depth,
+            'C': self.C,
+            'kernel': self.kernel,
+            'gamma': self.gamma,
+            'class_weight': self.class_weight,
             'random_state': self.random_state
         }
 
@@ -142,6 +152,6 @@ class AdaBoostChurn:
         for key, value in params.items():
             if hasattr(self, key):
                 setattr(self, key, value)
-                if key in ['n_estimators', 'learning_rate', 'algorithm', 'max_depth', 'random_state']:
+                if key in ['C', 'kernel', 'gamma', 'class_weight', 'random_state']:
                     self.model.set_params(**{key: value})
         return self
