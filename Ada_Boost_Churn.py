@@ -98,9 +98,8 @@ class AdaBoostChurn:
             'importance': self.model.feature_importances_
         }).sort_values('importance', ascending=False)
 
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(8, 6))
         sns.barplot(data=feature_importance.head(top_n), x='importance', y='feature')
-        plt.title(f'Top {top_n} Características más Importantes')
         plt.tight_layout()
         plt.show()
 
