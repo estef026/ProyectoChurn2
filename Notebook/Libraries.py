@@ -38,30 +38,11 @@ class LibraryInstaller:
 
     # Función para importar las librerías necesarias
     def import_libraries(self):
-        import pandas as pd
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        import numpy as np
-        import scipy
-        import openpyxl as op
-        from numpy.lib.shape_base import column_stack
-        from scipy.stats import skew
-        from statistics import mean, stdev
-        import os
-        from sklearn.preprocessing import StandardScaler
-        import tensorflow as tf
-        from tensorflow import keras
-        from tensorflow.keras import layers
-        from scikeras.wrappers import KerasClassifier
-        from sklearn.model_selection import train_test_split
-        from sklearn.ensemble import AdaBoostClassifier
-        from sklearn.tree import DecisionTreeClassifier
-        from sklearn.metrics import accuracy_score, classification_report
 
         # Si 'Sesgo' es un archivo o módulo local, asegúrate de importarlo
         try:
-            import Sesgo
-            from Sesgo import stats, biased_variables
+            from Codigo import Sesgo
+            from Codigo.Sesgo import stats, biased_variables
         except ImportError:
             print("El módulo 'Sesgo' no se encuentra. Verifica que esté en tu proyecto.")
 
