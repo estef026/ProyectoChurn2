@@ -36,21 +36,10 @@ class LibraryInstaller:
         else:
             print("\nTodas las librerías necesarias ya están instaladas.")
 
-    # Función para importar las librerías necesarias
-    def import_libraries(self):
-
-        # Si 'Sesgo' es un archivo o módulo local, asegúrate de importarlo
-        try:
-            from Codigo import Sesgo
-            from Codigo.Sesgo import stats, biased_variables
-        except ImportError:
-            print("El módulo 'Sesgo' no se encuentra. Verifica que esté en tu proyecto.")
-
     # Función principal para ejecutar
     def execute(self):
         self.update_pip()           # Actualizar pip
         self.install_libraries()    # Instalar librerías faltantes
-        self.import_libraries()     # Importar librerías necesarias
         print("\nTodo está instalado correctamente y actualizado. ¡Listo para trabajar!")
 
 # Lista de librerías a instalar
@@ -63,10 +52,8 @@ libraries = [
     'openpyxl',
     'scikit-learn',
     'tensorflow',
-    'imbalanced-learn',
     'pycaret',
     'scikeras',
-    'Sesgo'
 ]
 
 # Si "Sesgo" es una librería externa, agrégala aquí:
