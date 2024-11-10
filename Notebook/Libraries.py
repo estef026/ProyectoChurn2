@@ -54,10 +54,8 @@ libraries = [
     'tensorflow',
     'pycaret',
     'scikeras',
+    'importlib'
 ]
-
-# Si "Sesgo" es una librería externa, agrégala aquí:
-# 'Sesgo'
 
 # Crear una instancia de la clase y ejecutar
 installer = LibraryInstaller(libraries)

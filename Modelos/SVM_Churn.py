@@ -111,7 +111,7 @@ class SVMChurn:
             plt.tight_layout()
             plt.show()
 
-            return feature_importance
+
         else:
             print("La visualización de importancia solo está disponible para kernels lineales.")
             return None

@@ -112,7 +112,7 @@ class GradientBoostingChurn:
         plt.tight_layout()
         plt.show()
 
-        return feature_importance
+
 
     def plot_confusion_matrix(self, y_true, y_pred=None):
         """

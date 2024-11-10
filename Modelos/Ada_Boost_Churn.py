@@ -103,7 +103,7 @@ class AdaBoostChurn:
         plt.tight_layout()
         plt.show()
 
-        return feature_importance
+
 
     def plot_confusion_matrix(self, X, y_true, y_pred=None):
         """
