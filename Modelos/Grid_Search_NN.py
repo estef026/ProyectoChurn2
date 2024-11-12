@@ -10,6 +10,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 
+#FUNCIÓN PARA GRIDSEARCH
 def grid_search_model(input_shape = 43, optimizer = 'adam'):
     model = Sequential()
     model.add(Dense(128, activation='relu', input_shape=(input_shape,)))
