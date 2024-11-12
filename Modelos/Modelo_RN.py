@@ -98,10 +98,10 @@ class ModeloRedNeuronal:
                 """
         cm = confusion_matrix(y_test, y_pred) # Calcula la matriz de confusión entre las etiquetas reales y las predicciones.
         sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")  # Visualiza la matriz con un mapa de calor.
-        plt.title("Matriz de Confusión")   # Título de la gráfica.
-        plt.xlabel("Predicciones") # Etiqueta del eje X.
+        plt.title("Matriz de Confusión")   #Título de la gráfica.
+        plt.xlabel("Predicciones") #Etiqueta del eje X.
         plt.ylabel("Valores Verdaderos") # Etiqueta del eje Y.
-        plt.show() # Muestra la gráfica.
+        plt.show() #Muestra la gráfica.
 
 
     def classification_report(self, y_test, y_pred):
