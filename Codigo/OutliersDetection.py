@@ -2,10 +2,28 @@ import pandas as pd
 
 class OutlierDetector:
     def __init__(self, df):
+        """
+                Inicializa la clase con el DataFrame proporcionado.
+
+                Parámetros:
+                -----------
+                df : pandas.DataFrame
+                    DataFrame en el que se desea identificar valores atípicos.
+                """
         self.df = df
 
     def count_outliers(self, column):
+        """
+                Calcula el número de valores atípicos en una columna específica utilizando
+                el metodo del IQR.
 
+                Parámetros:
+
+                column: Nombre de la columna numérica en la que se desea contar los outliers.
+
+                Retorna:Cantidad de valores atípicos en la columna especificada.
+
+            """
 
 
         Q1 = self.df[column].quantile(0.25)
@@ -21,17 +39,25 @@ class OutlierDetector:
         return len(outliers)
 
     def outliers_summary(self):
-        # Total number of records in the DataFrame
+        """
+                Genera un resumen de los valores atípicos para todas las columnas numéricas del DataFrame.
+
+                Retorna:
+                    DataFrame con tres columnas:
+                    - 'Column': nombre de la columna numérica.
+                    - 'Outlier_Count': cantidad de valores atípicos en la columna.
+                    - 'Outlier_Percentage': porcentaje de outliers sobre el total de registros.
+                    """
         total_records = len(self.df)
-        # Create a list to store results
+
         outlier_data = []
 
-        # Loop through each numerical column to calculate outlier counts and percentages
+
         for column in self.df.select_dtypes(include=['float', 'int']).columns:
             count = self.count_outliers(column)
             percentage = (count / total_records) * 100
             outlier_data.append((column, count, percentage))
 
-        # Convert list to DataFrame
+
         outliers_df = pd.DataFrame(outlier_data, columns=['Column', 'Outlier_Count', 'Outlier_Percentage'])
         return outliers_df
