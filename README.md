@@ -50,7 +50,8 @@ ProyectoChurn
 
 **¡Recomendaciones!** ✅
 
-* Uso de Python 3.11 como interprete. Esta versión es necesaria para utilizar la librería `Pycaret`
+* Este repositorio es público, puede ser clonado en PyCharm.
+* Uso de Python 3.11 como interprete en PyCharm. Esta versión es necesaria para utilizar la librería `Pycaret`
 * Instalar las librerías contenidas en el archivo `Libraries.py`. La línea de código para su instalación
 es la primera línea a ejecutar en el archivo `Notebook Proyecto Churn.ipynb`
 * Conservar la estructura de las carpetas, especialmente para la ejecución de los modelos construidos.
