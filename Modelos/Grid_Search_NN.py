@@ -10,8 +10,22 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 
+
 #FUNCIÓN PARA GRIDSEARCH
 def grid_search_model(input_shape = 43, optimizer = 'adam'):
+    """
+        Crea un modelo de red neuronal con una arquitectura específica y configuración de optimización
+        para realizar una búsqueda de hiperparámetros mediante GridSearch.
+
+        Parámetros:
+        input_shape : Número de características de entrada al modelo.
+        Define la dimensión de la capa de entrada.
+
+        optimizer : Optimizador utilizado para entrenar el modelo.
+
+        Retorna:
+        model : Modelo de red neuronal compilado, con la arquitectura y optimizador especificados.
+        """
     model = Sequential()
     model.add(Dense(128, activation='relu', input_shape=(input_shape,)))
     model.add(Dropout(0.1))
